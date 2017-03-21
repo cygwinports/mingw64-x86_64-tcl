@@ -2,7 +2,7 @@ CROSS_HOST="x86_64-w64-mingw32"
 inherit cross
 
 NAME="mingw64-x86_64-tcl"
-VERSION=8.5.15
+VERSION=8.6.6
 RELEASE=1
 CATEGORY="Devel"
 SUMMARY="Tcl interpreter for Win64 toolchain"
@@ -11,16 +11,17 @@ contains msvcrt-linked binaries (aka 'mingw').  It is for use with the
 mingw64-x86_64-gcc cross compiler, and installs into the
 /usr/x86_64-w64-mingw32/sys-root/mingw/{lib,include} directories."
 HOMEPAGE="http://tcl.tk/"
-SRC_URI="mirror://sourceforge/tcl/tcl${VERSION}-src.tar.gz"
+SRC_URI="mirror://sourceforge/tcl/tcl-core${VERSION}-src.tar.gz"
 SRC_DIR="tcl${VERSION}"
 PATCH_URI="
-	http://pkgs.fedoraproject.org/cgit/mingw-tcl.git/plain/tcl-8.5.14-autopath.patch
-	http://pkgs.fedoraproject.org/cgit/mingw-tcl.git/plain/tcl-8.5.14-conf.patch
-	http://pkgs.fedoraproject.org/cgit/mingw-tcl.git/plain/tcl-8.5.14-hidden.patch
-	http://pkgs.fedoraproject.org/cgit/mingw-tcl.git/plain/tcl-8.5.6-mingw.patch
-	http://pkgs.fedoraproject.org/cgit/mingw-tcl.git/plain/tcl-nativetclsh.patch
-	http://pkgs.fedoraproject.org/cgit/mingw-tcl.git/plain/tcl-mingw-w64-compatibility.patch
-	http://pkgs.fedoraproject.org/cgit/mingw-tcl.git/plain/tcl-8.5.14-mingwexcept.patch
+	http://pkgs.fedoraproject.org/cgit/rpms/mingw-tcl.git/plain/tcl-8.6.3-autopath.patch
+	http://pkgs.fedoraproject.org/cgit/rpms/mingw-tcl.git/plain/tcl-8.6.3-conf.patch
+	http://pkgs.fedoraproject.org/cgit/rpms/mingw-tcl.git/plain/tcl-8.6.5-hidden.patch
+	http://pkgs.fedoraproject.org/cgit/rpms/mingw-tcl.git/plain/tcl-8.6.5-parallel-make-fix.patch
+	http://pkgs.fedoraproject.org/cgit/rpms/mingw-tcl.git/plain/tcl-8.5.6-mingw.patch
+	http://pkgs.fedoraproject.org/cgit/rpms/mingw-tcl.git/plain/tcl-nativetclsh.patch
+	http://pkgs.fedoraproject.org/cgit/rpms/mingw-tcl.git/plain/tcl-mingw-w64-compatibility.patch
+	http://pkgs.fedoraproject.org/cgit/rpms/mingw-tcl.git/plain/tcl-8.6.1-nativezlib.patch
 "
 
 DIFF_EXCLUDES="Makefile tcl.hpj tclConfig.sh"
@@ -30,14 +31,16 @@ slot=${PV_MAJ_MIN}
 src_compile() {
 	lndirs
 	cd ${B}/win
-	cygconf --includedir=${CROSS_INCLUDEDIR}/tcl${slot}
-	cygmake -j1
+	cygconf --enable-64bit
+	cygmake -j1 CYGPATH=echo
 }
 
 src_install() {
 	cd ${B}/win
 	USE_DESTDIR=0
-	cyginstall includedir=${D}${CROSS_INCLUDEDIR}/tcl${slot}
+	cyginstall
+
+	rm -f ${D}${CROSS_BINDIR}/zlib1.dll
 
 	sed -i \
 		-e "s|^\(TCL_BUILD_LIB_SPEC\)='.*|\1='-Wl,${CROSS_LIBDIR}/libtcl${slot//.}.a'|" \
