@@ -2,7 +2,7 @@ CROSS_HOST="x86_64-w64-mingw32"
 inherit cross
 
 NAME="mingw64-x86_64-tcl"
-VERSION=8.6.6
+VERSION=8.6.8
 RELEASE=1
 CATEGORY="Devel"
 SUMMARY="Tcl interpreter for Win64 toolchain"
@@ -15,7 +15,6 @@ SRC_URI="mirror://sourceforge/tcl/tcl-core${VERSION}-src.tar.gz"
 SRC_DIR="tcl${VERSION}"
 PATCH_URI="
 	http://pkgs.fedoraproject.org/cgit/rpms/mingw-tcl.git/plain/tcl-8.6.3-autopath.patch
-	http://pkgs.fedoraproject.org/cgit/rpms/mingw-tcl.git/plain/tcl-8.6.3-conf.patch
 	http://pkgs.fedoraproject.org/cgit/rpms/mingw-tcl.git/plain/tcl-8.6.5-hidden.patch
 	http://pkgs.fedoraproject.org/cgit/rpms/mingw-tcl.git/plain/tcl-8.6.5-parallel-make-fix.patch
 	http://pkgs.fedoraproject.org/cgit/rpms/mingw-tcl.git/plain/tcl-8.5.6-mingw.patch
